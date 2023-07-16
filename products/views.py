@@ -5,20 +5,22 @@ from django.contrib.auth.decorators import login_required
 
 
 # Функция отображения страницы главной страницы
-
 def index(request):
     context = {'title': 'Книжный магазин', }
     return render(request, template_name='products/index.html', context=context)
 
 
-# Контроллер отображения страницы с продуктами
+# Контроллер вывода товаров
+def products(request, category_id=None):
+    # Фильтруем товары по категории, иначе передаем все
+    if category_id:
+        products = Product.objects.filter(category_id=category_id)
+    else:
+        products = Product.objects.all()
 
-def products(request):
-    context = {
-        'title': 'Каталог книг',
-        'products': Product.objects.all(),
-        'categories': ProductCategory.objects.all(),
-    }
+    context = {'title': 'Каталог книг', 'products': products,
+               'categories': ProductCategory.objects.all(), }
+
     return render(request, 'products/products.html', context=context)
 
 
